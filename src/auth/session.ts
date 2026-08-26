@@ -32,7 +32,7 @@ function isSession(value: unknown): value is Session {
 }
 
 export function sessionFilePath(): string {
-  const override = process.env.BENEPPASS_SESSION_PATH;
+  const override = process.env.BENEPASS_SESSION_PATH;
   if (override && override.length > 0) {
     return override;
   }
