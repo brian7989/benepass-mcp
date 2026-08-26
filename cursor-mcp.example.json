@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "benepass": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/TO/benepass-mcp/dist/index.js"]
+    }
+  }
+}
