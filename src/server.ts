@@ -1,39 +1,13 @@
 import { McpServer } from "@modelcontextprotocol/server";
-import { SERVER_NAME, SERVER_VERSION } from "./benepass/constants.js";
-import { registerAccountTools } from "./tools/accounts.js";
-import { registerAuthTools } from "./tools/auth.js";
-import { registerDocumentTools } from "./tools/documents.js";
-import { registerHsaTools } from "./tools/hsa.js";
-import { registerTransactionTools } from "./tools/transactions.js";
-import { registerUserTools } from "./tools/user.js";
-import { registerWorkspaceTools } from "./tools/workspaces.js";
+import { type ServerDeps, createApp } from "./app.js";
+import { registerTools } from "./tools.js";
+import { SERVER_NAME, SERVER_VERSION } from "./version.js";
 
-const registeredNames: string[] = [];
+export { TOOL_NAMES, FORBIDDEN_TOOL_SUBSTR } from "./tools.js";
+export type { ServerDeps } from "./app.js";
 
-export function createServer(): McpServer {
-  registeredNames.length = 0;
+export function createServer(deps: ServerDeps = {}): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
-  const registerTool = server.registerTool.bind(server);
-  server.registerTool = ((
-    name: string,
-    ...rest: Parameters<McpServer["registerTool"]> extends [string, ...infer R] ? R : never
-  ) => {
-    registeredNames.push(name);
-    return registerTool(name, ...rest);
-  }) as McpServer["registerTool"];
-  registerAuthTools(server);
-  registerWorkspaceTools(server);
-  registerAccountTools(server);
-  registerTransactionTools(server);
-  registerHsaTools(server);
-  registerDocumentTools(server);
-  registerUserTools(server);
+  registerTools(server, createApp(deps));
   return server;
-}
-
-export function registeredToolNames(): string[] {
-  if (registeredNames.length === 0) {
-    createServer();
-  }
-  return [...registeredNames];
 }
